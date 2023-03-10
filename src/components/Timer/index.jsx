@@ -18,7 +18,7 @@ export default function Timer() {
   const [pomodoroCount, setPomodoroCount] = useState(0);
   const [showTimeModal, setShowTimeModal] = useState(false);
   const [showBreakModal, setShowBreakModal] = useState(false);
-  const [newTime, setNewTime] = useState(25);
+  const [newTime, setNewTime] = useState('');
 
   const countRef = useRef(null);
 
@@ -57,6 +57,27 @@ export default function Timer() {
     setWorkTime(25 * 60);
     setBreakTime(5 * 60);
   };
+
+  /* const handleReset = () => {
+    Alert.alert(
+      "Cronograma acabou",
+      "Deseja continuar?",
+      [
+        {
+          text: "Não",
+          onPress: () => handleBreak(),
+          style: "cancel"
+        },
+        {
+          text: "Sim",
+          onPress: () => {
+            setWorkTime(25 * 60);
+            setIsPaused(true);
+          }
+        }
+      ]
+    );
+  } */
 
   const formatTime = (timeInSeconds) => {
     const minutes = Math.floor(timeInSeconds / 60);
