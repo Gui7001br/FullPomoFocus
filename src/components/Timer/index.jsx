@@ -7,9 +7,23 @@ import {
   Keyboard,
   StyleSheet,
   Vibration,
+  Alert,
 } from 'react-native';
 import CountDown from 'react-native-countdown-component';
 import { Audio } from 'expo-av'; // importando API Audio
+
+  const playSound = async () => {
+    try {
+      const { sound } = await Audio.Sound.createAsync(
+        require('../../../assets/notification/ChillDay.mp3'),
+        { shouldPlay: true, isLooping: true }
+      );
+      setIsPlayingSound(true);
+      await sound.playAsync();
+    } catch (error) {
+      console.log('Error playing sound: ', error);
+    }
+    }
 
 export default function Timer() {
   const [isPaused, setIsPaused] = useState(true);
@@ -20,6 +34,7 @@ export default function Timer() {
   const [showTimeModal, setShowTimeModal] = useState(false);
   const [showBreakModal, setShowBreakModal] = useState(false);
   const [newTime, setNewTime] = useState('');
+const [isPlayingSound, setIsPlayingSound] = useState(false);
 
   const countRef = useRef(null);
 
@@ -40,6 +55,10 @@ export default function Timer() {
     }
     if (pomodoroCount + 1 === 4) {
       setShowBreakModal(true);
+    } if (!isPlayingSound) {
+      await playSound();
+    } else {
+      handleReset()
     }
   };
 
@@ -59,7 +78,7 @@ export default function Timer() {
     setBreakTime(5 * 60);
   };
 
-  /* const handleReset = () => {
+   const handleReset = () => {
     Alert.alert(
       "Cronograma acabou",
       "Deseja continuar?",
@@ -78,7 +97,7 @@ export default function Timer() {
         }
       ]
     );
-  } */
+  } 
 
   const formatTime = (timeInSeconds) => {
     const minutes = Math.floor(timeInSeconds / 60);
