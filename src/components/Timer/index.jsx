@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import {
   View,
   Text,
@@ -9,6 +9,7 @@ import {
   Vibration,
 } from 'react-native';
 import CountDown from 'react-native-countdown-component';
+import { Audio } from 'expo-av'; // importando API Audio
 
 export default function Timer() {
   const [isPaused, setIsPaused] = useState(true);
@@ -30,7 +31,7 @@ export default function Timer() {
     setIsPaused(true);
   };
 
-  const handleFinish = () => {
+  const handleFinish = async () => {
     Vibration.vibrate(500);
     setIsWorking(!isWorking);
     countRef.current.reset();
@@ -46,7 +47,7 @@ export default function Timer() {
     Keyboard.dismiss();
     setShowTimeModal(false);
     setWorkTime(parseInt(newTime) * 60);
-    setNewTime();
+    setNewTime('');
   };
 
   const handleBreak = () => {
@@ -104,20 +105,20 @@ export default function Timer() {
         <Text style={styles.timerText}>{isWorking ? 'Work' : 'Break'}</Text>
       </View>
       <TouchableOpacity style={styles.button} onPress={() => setShowTimeModal(true)}>
-        <Text style={styles.buttonText}>Change time</Text>
+        <Text style={styles.buttonText}>Mudar tempo</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.button} onPress={() => setShowBreakModal(true)}>
-        <Text style={styles.buttonText}>Take a break</Text>
+        <Text style={styles.buttonText}>Dar um tempo</Text>
       </TouchableOpacity>
       <Text style={styles.pomodoroCountText}>{`Pomodoros done: ${pomodoroCount}`}</Text>
       {showTimeModal && (
         <View style={styles.modalContainer}>
           <View style={styles.modal}>
-            <Text style={styles.modalTitle}>Change work time</Text>
+            <Text style={styles.modalTitle}>Alterar horário de trabalho</Text>
             <TextInput
               style={styles.modalInput}
               value={newTime}
-              placeholder="New time in minutes"
+              placeholder="Novo horário em minutos"
               keyboardType="number-pad"
               onChangeText={text => setNewTime(text)}
             />
@@ -130,10 +131,10 @@ export default function Timer() {
       {showBreakModal && (
         <View style={styles.modalContainer}>
           <View style={styles.modal}>
-            <Text style={styles.modalTitle}>Take a break</Text>
-            <Text style={styles.modalText}>You completed 4 pomodoros! Time for a break.</Text>
+            <Text style={styles.modalTitle}>Dar um tempo</Text>
+            <Text style={styles.modalText}>Você completou 4 pomodoros! Tempo para uma pausa.</Text>
             <TouchableOpacity style={styles.modalButton} onPress={handleBreak}>
-              <Text style={styles.buttonText}>OK</Text>
+              <Text style={styles.buttonText}>Começar pausa</Text>
             </TouchableOpacity>
           </View>
         </View>
